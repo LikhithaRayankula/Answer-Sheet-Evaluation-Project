@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Login - Handwriting Analysis</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+    font-family:'Poppins',sans-serif;
+    background:linear-gradient(135deg,#f5f7fa,#c3cfe2);
+    min-height:100vh;
+}
+
+/* Navbar */
+.navbar{
+    background:linear-gradient(90deg,#6a11cb,#2575fc);
+}
+
+.navbar-brand{
+    color:white !important;
+    font-weight:600;
+}
+
+/* Login Styles */
+
+.login-container{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-top:50px;
+}
+
+.login-card{
+    border:none;
+    border-radius:18px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.15);
+    overflow:hidden;
+}
+
+.login-left{
+    background:linear-gradient(135deg,#6a11cb,#2575fc);
+    color:white;
+    padding:50px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+}
+
+.login-right{
+    padding:40px;
+}
+
+.input-group-text{
+    background:#f1f3f6;
+}
+
+.login-btn{
+    width:100%;
+    padding:12px;
+    border-radius:30px;
+}
+
+.password-toggle{
+    cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+<div class="container">
+<a class="navbar-brand" href="index.html">
+<i class="fa-solid fa-pen-nib"></i> Handwriting OCR
+</a>
+</div>
+</nav>
+
+
+<div class="container login-container">
+
+<div class="row login-card col-lg-10">
+
+<!-- LEFT -->
+<div class="col-md-6 login-left text-center">
+<h3>Welcome Back 👋</h3>
+<p class="mt-3">
+Login to analyze handwritten answers using AI-powered OCR and scoring.
+</p>
+
+<img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+     style="width:200px;margin-top:20px">
+</div>
+
+<!-- RIGHT -->
+<div class="col-md-6 login-right">
+
+<h3 class="mb-4 text-center">🔐 Login</h3>
+
+<form onsubmit="loginUser(event)">
+
+<div class="mb-3">
+<label class="form-label">Username</label>
+<div class="input-group">
+<span class="input-group-text"><i class="fa fa-user"></i></span>
+<input type="text" id="username" class="form-control" required>
+</div>
+</div>
+
+<div class="mb-3">
+<label class="form-label">Password</label>
+<div class="input-group">
+<span class="input-group-text"><i class="fa fa-lock"></i></span>
+<input type="password" id="password" class="form-control" required>
+<span class="input-group-text password-toggle" onclick="togglePassword()">
+<i class="fa fa-eye"></i>
+</span>
+</div>
+</div>
+
+<button type="submit" class="btn btn-primary login-btn">
+Login
+</button>
+
+<div class="text-center mt-3">
+<p>Don't have an account?
+<a href="register.html">Register</a>
+</p>
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+function togglePassword(){
+let x = document.getElementById("password");
+x.type = (x.type === "password") ? "text" : "password";
+}
+
+// LOGIN FUNCTION
+function loginUser(event){
+event.preventDefault();
+
+let username = document.getElementById("username").value;
+let password = document.getElementById("password").value;
+
+// simple validation
+if(username && password){
+    localStorage.setItem("username", username);
+    alert("Login Successful!");
+    window.location.href = "user_home.html";
+}else{
+    alert("Please enter details");
+}
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Result - Handwriting Analysis</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+body{
+    font-family:'Poppins',sans-serif;
+    background:linear-gradient(135deg,#f5f7fa,#c3cfe2);
+}
+
+.navbar{
+    background:linear-gradient(90deg,#6a11cb,#2575fc);
+}
+
+.result-card{
+border:none;
+border-radius:15px;
+box-shadow:0 10px 30px rgba(0,0,0,0.1);
+padding:25px;
+margin-bottom:20px;
+}
+
+.score-box{
+background:#f8f9ff;
+padding:20px;
+border-radius:12px;
+margin-bottom:15px;
+}
+
+.progress{
+height:18px;
+border-radius:10px;
+}
+
+.text-box{
+background:#fafafa;
+padding:15px;
+border-radius:10px;
+border-left:4px solid #6a11cb;
+max-height:200px;
+overflow:auto;
+}
+
+.final-score{
+font-size:28px;
+font-weight:bold;
+color:#2575fc;
+}
+
+.preview-img{
+max-width:100%;
+border-radius:10px;
+margin-bottom:15px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-dark">
+<div class="container">
+<a class="navbar-brand text-white" href="index.html">
+<i class="fa-solid fa-pen-nib"></i> Handwriting OCR
+</a>
+</div>
+</nav>
+
+
+<div class="container">
+
+<h2 class="mb-4 text-center">📊 Handwriting Analysis Results</h2>
+
+<div class="row">
+
+<!-- LEFT -->
+<div class="col-md-5">
+
+<div class="result-card">
+
+<h4 class="text-center mb-3">📈 Score Visualization</h4>
+
+<canvas id="scoreChart"></canvas>
+
+</div>
+
+</div>
+
+
+<!-- RIGHT -->
+<div class="col-md-7">
+
+<!-- Uploaded Image -->
+<div class="result-card text-center">
+<h5>📄 Uploaded Image</h5>
+<img id="uploadedImg" class="preview-img">
+</div>
+
+<!-- Final Score -->
+<div class="result-card text-center">
+<h4>🏆 Final Evaluation Score</h4>
+<div class="final-score" id="finalScore"></div>
+</div>
+
+<!-- Score Bars -->
+<div class="result-card">
+
+<h5 class="mb-3">📊 Score Breakdown</h5>
+
+<div class="score-box">
+Cosine Similarity
+<div class="progress mt-2">
+<div class="progress-bar bg-primary" id="simBar"></div>
+</div>
+</div>
+
+<div class="score-box">
+Partial Matching
+<div class="progress mt-2">
+<div class="progress-bar bg-success" id="partialBar"></div>
+</div>
+</div>
+
+<div class="score-box">
+LLM Score
+<div class="progress mt-2">
+<div class="progress-bar bg-warning" id="llmBar"></div>
+</div>
+</div>
+
+</div>
+
+<!-- Text Results -->
+<div class="result-card">
+<h5>📄 Raw OCR Text</h5>
+<div class="text-box" id="rawText"></div>
+</div>
+
+<div class="result-card">
+<h5>✏ Corrected Text</h5>
+<div class="text-box" id="correctedText"></div>
+</div>
+
+<div class="result-card">
+<h5>🧠 Structured Paragraph</h5>
+<div class="text-box" id="structuredText"></div>
+</div>
+
+<div class="text-center mt-3">
+<a href="user_home.html" class="btn btn-primary">
+⬅ Analyze Another Image
+</a>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+// LOGIN CHECK
+let user = localStorage.getItem("username");
+if(!user){
+    window.location.href = "login.html";
+}
+
+// SHOW IMAGE
+let imgData = localStorage.getItem("uploadedImage");
+document.getElementById("uploadedImg").src = imgData;
+
+
+// DUMMY AI SCORES (random for demo)
+let similarity = (Math.random() * 1).toFixed(2);
+let partial = (Math.random() * 1).toFixed(2);
+let llm = (Math.random() * 10).toFixed(1);
+
+let finalScore = ((parseFloat(similarity)*10 + parseFloat(partial)*10 + parseFloat(llm)) / 3).toFixed(2);
+
+// SET SCORES
+document.getElementById("finalScore").innerText = finalScore + " / 10";
+
+document.getElementById("simBar").style.width = (similarity*100) + "%";
+document.getElementById("simBar").innerText = similarity;
+
+document.getElementById("partialBar").style.width = (partial*100) + "%";
+document.getElementById("partialBar").innerText = partial;
+
+document.getElementById("llmBar").style.width = (llm*10) + "%";
+document.getElementById("llmBar").innerText = llm;
+
+
+// DUMMY TEXT OUTPUT
+document.getElementById("rawText").innerText =
+"This is extracted handwritten text using OCR...";
+
+document.getElementById("correctedText").innerText =
+"This is the corrected version of the handwritten text with grammar fixes.";
+
+document.getElementById("structuredText").innerText =
+"This system extracts handwritten answers, corrects grammar, and structures them into meaningful paragraphs using AI techniques.";
+
+
+// CHART
+var ctx = document.getElementById('scoreChart').getContext('2d');
+
+new Chart(ctx, {
+type: 'bar',
+data: {
+labels: ['Cosine','Partial','LLM','Final'],
+datasets: [{
+data: [
+similarity*10,
+partial*10,
+llm,
+finalScore
+],
+backgroundColor: ['#4e73df','#1cc88a','#f6c23e','#36b9cc']
+}]
+},
+options: {
+plugins:{legend:{display:false}},
+scales:{y:{beginAtZero:true,max:10}}
+}
+});
+
+</script>
+
+</body>
+</html>

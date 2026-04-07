@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Dashboard - Handwriting Analysis</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+    font-family:'Poppins',sans-serif;
+    background:linear-gradient(135deg,#f5f7fa,#c3cfe2);
+}
+
+/* Navbar */
+.navbar{
+    background:linear-gradient(90deg,#6a11cb,#2575fc);
+}
+
+.navbar-brand{
+    color:white !important;
+}
+
+/* Dashboard */
+
+.dashboard-card{
+    border:none;
+    border-radius:18px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.12);
+    padding:40px;
+    margin-top:40px;
+}
+
+.upload-box{
+    border:2px dashed #6c63ff;
+    border-radius:15px;
+    padding:40px;
+    text-align:center;
+    cursor:pointer;
+    background:#f8f9ff;
+}
+
+.upload-box:hover{
+    background:#eef0ff;
+}
+
+.upload-icon{
+    font-size:50px;
+    color:#6c63ff;
+}
+
+.upload-btn{
+    padding:12px 30px;
+    border-radius:30px;
+}
+
+.preview-img{
+    margin-top:20px;
+    max-width:250px;
+    border-radius:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+<div class="container">
+
+<a class="navbar-brand" href="index.html">
+<i class="fa-solid fa-pen-nib"></i> Handwriting OCR
+</a>
+
+<div class="ms-auto">
+<a class="btn btn-light" onclick="logout()">Logout</a>
+</div>
+
+</div>
+</nav>
+
+
+<div class="container">
+
+<div class="dashboard-card">
+
+<!-- Welcome -->
+<div class="text-center mb-4">
+
+<h2 id="welcomeText"></h2>
+
+<p class="text-muted">
+Upload your handwritten answer sheet and let our AI system analyze it.
+</p>
+
+</div>
+
+
+<!-- Upload Section -->
+<form onsubmit="goToResult(event)">
+
+<div class="upload-box" onclick="document.getElementById('fileInput').click()">
+
+<div class="upload-icon">📄</div>
+
+<h5 class="mt-3">Drag & Drop or Click to Upload</h5>
+
+<p class="text-muted">Supported formats: JPG, PNG, JPEG</p>
+
+<input type="file"
+       id="fileInput"
+       accept="image/*"
+       hidden
+       onchange="previewImage(event)"
+       required>
+
+</div>
+
+<!-- Preview -->
+<div class="text-center">
+<img id="preview" class="preview-img" style="display:none;">
+</div>
+
+<!-- Button -->
+<div class="text-center mt-4">
+<button type="submit" class="btn btn-primary upload-btn">
+🚀 Analyze Handwriting
+</button>
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+
+<script>
+
+// LOGIN CHECK
+let user = localStorage.getItem("username");
+
+if(!user){
+    alert("Please login first!");
+    window.location.href = "login.html";
+}
+
+// SHOW USERNAME
+document.getElementById("welcomeText").innerText = "👋 Hello, " + user;
+
+
+// IMAGE PREVIEW
+function previewImage(event){
+let reader = new FileReader();
+
+reader.onload = function(){
+let output = document.getElementById('preview');
+output.src = reader.result;
+output.style.display = "block";
+}
+
+reader.readAsDataURL(event.target.files[0]);
+}
+
+
+// REDIRECT TO RESULT PAGE
+function goToResult(event){
+event.preventDefault();
+
+// Save image temporarily
+let file = document.getElementById("fileInput").files[0];
+
+if(file){
+    let reader = new FileReader();
+    reader.onload = function(){
+        localStorage.setItem("uploadedImage", reader.result);
+        window.location.href = "result.html";
+    }
+    reader.readAsDataURL(file);
+}else{
+    alert("Please upload an image");
+}
+}
+
+
+// LOGOUT
+function logout(){
+localStorage.removeItem("username");
+window.location.href = "index.html";
+}
+
+</script>
+
+</body>
+</html>
